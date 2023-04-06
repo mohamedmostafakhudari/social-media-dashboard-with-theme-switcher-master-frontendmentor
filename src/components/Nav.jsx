@@ -1,6 +1,21 @@
 import React from "react";
 import Toggle from "./Toggle";
+import { useState, useEffect } from "react";
 export default function Nav({ onToggleTheme, theme }) {
+  const [mouseOverToggle, setMouseOverToggle] = useState(false);
+
+  useEffect(() => {
+    function handleMouseOver(e) {
+      const target = e.target.closest("#toggle");
+      if (!target) {
+        setMouseOverToggle(false);
+        return;
+      }
+      setMouseOverToggle(true);
+    }
+    document.addEventListener("mouseover", handleMouseOver);
+    return () => document.removeEventListener("mouseover", handleMouseOver);
+  }, []);
   return (
     <nav className="md:flex md:justify-between bg-blue-veryPale dark:bg-blue-veryDark1">
       <div>
@@ -12,7 +27,11 @@ export default function Nav({ onToggleTheme, theme }) {
         </span>
       </div>
       <div className="hidden md:flex items-center gap-2">
-        <div className="text-sm text-blue-darkGrayish font-bold dark:text-blue-desaturated">
+        <div
+          className={`text-sm font-bold text-blue-darkGrayish ${
+            mouseOverToggle ? "dark:text-white" : " dark:text-blue-desaturated"
+          }`}
+        >
           Dark Mode
         </div>
         <Toggle onToggle={onToggleTheme} theme={theme} />
